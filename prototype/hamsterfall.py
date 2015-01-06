@@ -62,9 +62,6 @@ def gameLoop():
                 elif event.key == pygame.K_RIGHT:
                     lead_x_change = block_size
                     lead_y_change = 0
-                elif event.key == pygame.K_UP:
-                    lead_y_change = -block_size
-                    lead_x_change = 0
                 elif event.key == pygame.K_DOWN:
                     lead_y_change = block_size
                     lead_x_change = 0
