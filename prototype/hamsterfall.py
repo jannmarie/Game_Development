@@ -1,11 +1,13 @@
 import pygame
 import time
+import random
 
 pygame.init()
 
 white = (255,255,255)
 black = (0,0,0)
 red = (255,0,0)
+blue = (0,0,255)
 
 display_width = 800
 display_height = 600
@@ -31,15 +33,17 @@ def gameLoop():
     gameOver = False
     
     lead_x = display_width/2
-    lead_y = display_height/2
+    lead_y = 30
 
     lead_x_change = 0
     lead_y_change = 0
-    
+
+    randCloudX = random.randrange(0, display_width-block_size)
+    randCloudY = random.randrange(0, display_height-block_size)   
     while not gameExit:
         
         while gameOver == True:
-            gameDisplay.fill(white)
+            gameDisplay.fill(black)
             message_to_screen("Game over, press c to continue, q to quit",red)
             pygame.display.update()
 
@@ -74,9 +78,14 @@ def gameLoop():
 
         lead_x += lead_x_change
         lead_y += lead_y_change
-        gameDisplay.fill(white)
-        pygame.draw.rect(gameDisplay, black, [lead_x,lead_y,block_size,block_size])
+        
+        gameDisplay.fill(black)
+        pygame.draw.rect(gameDisplay, blue, [lead_x,lead_y,block_size,block_size])
+        pygame.draw.rect(gameDisplay, red, [randCloudX,randCloudY,block_size,block_size])
         pygame.display.update()
+
+        if lead_x == randCloudX and lead_y == randCloudY:
+            print
 
         clock.tick(FPS)
 
