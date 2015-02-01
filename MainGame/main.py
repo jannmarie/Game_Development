@@ -1,5 +1,6 @@
 import pygame
 import time
+import random
 
 pygame.init()
 
@@ -7,8 +8,6 @@ display_width = 800
 display_height = 600
 
 black = (0,0,0)
-white = (255,255,255)
-red = (255,0,0)
 blue = (16,135,247)
 
 gameDisplay = pygame.display.set_mode((display_width,display_height))
@@ -21,10 +20,13 @@ hamster_height = 100
 
 def Hamster(x,y):
     gameDisplay.blit(HamImg,(x,y))
-
+    
 def terminate():
     pygame.quit()
     quit()
+
+def things(thingx, thingy, thingw, thingh, color):
+    pygame.draw.rect(gameDisplay, color, [thingx, thingy, thingw, thingh])
 
 def game_loop():
     x = (display_width * 0.45)
@@ -33,6 +35,12 @@ def game_loop():
     x_change = 0
     y_change = 0
 
+    thing_startx = random.randrange(0, display_width)
+    thing_starty = 600
+    thing_speed = 2
+    thing_width = 100
+    thing_height = 100
+    
     gameExit = False
     while not gameExit:
         
@@ -64,6 +72,11 @@ def game_loop():
         y += y_change
                
         gameDisplay.fill(blue)
+
+        #things(thingx, thingy, thingh, color)
+        things(thing_startx, thing_starty, thing_width, thing_height, black)
+        thing_starty -= thing_speed
+        
         Hamster(x,y)
 
         if x > display_width - hamster_width:
@@ -74,9 +87,13 @@ def game_loop():
             y = display_height - hamster_height
         if y < 0:
             y = 0
+
+        if thing_starty < 0 - thing_height:
+            thing_starty = 600
+            thing_startx = random.randrange(0, display_width)
             
         pygame.display.update()
-        clock.tick(60)
+        clock.tick(100)
 
 game_loop()
 
