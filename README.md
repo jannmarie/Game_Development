@@ -5,7 +5,7 @@ Name of Game: Hamster Fall
 
 Genre: Action
 
-Platform: Mobile - Android
+Platform: PC
 
 Language: Python 
 
