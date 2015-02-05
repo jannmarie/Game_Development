@@ -18,15 +18,19 @@ HamImg = pygame.image.load('hammy.png')
 hamster_width = 100
 hamster_height = 100
 
+cloud = pygame.image.load('cloud1.png')
+cloud_width = 202
+cloud_height = 102 
+
 def Hamster(x,y):
     gameDisplay.blit(HamImg,(x,y))
+
+def Cloud(cloud_x,cloud_y):
+    gameDisplay.blit(cloud, (cloud_x,cloud_y))
     
 def terminate():
     pygame.quit()
     quit()
-
-def things(thingx, thingy, thingw, thingh, color):
-    pygame.draw.rect(gameDisplay, color, [thingx, thingy, thingw, thingh])
 
 def game_loop():
     x = (display_width * 0.45)
@@ -35,11 +39,9 @@ def game_loop():
     x_change = 0
     y_change = 0
 
-    thing_startx = random.randrange(0, display_width)
-    thing_starty = 600
-    thing_speed = 2
-    thing_width = 100
-    thing_height = 100
+    cloud_startx = random.randrange(0, display_width)
+    cloud_starty = 600
+    cloud_speed = 2
     
     gameExit = False
     while not gameExit:
@@ -73,9 +75,8 @@ def game_loop():
                
         gameDisplay.fill(blue)
 
-        #things(thingx, thingy, thingh, color)
-        things(thing_startx, thing_starty, thing_width, thing_height, black)
-        thing_starty -= thing_speed
+        Cloud(cloud_startx, cloud_starty)
+        cloud_starty -= cloud_speed
         
         Hamster(x,y)
 
@@ -88,9 +89,14 @@ def game_loop():
         if y < 0:
             y = 0
 
-        if thing_starty < 0 - thing_height:
-            thing_starty = 600
-            thing_startx = random.randrange(0, display_width)
+        if cloud_starty < 0 - cloud_height:
+            cloud_starty = 600
+            cloud_startx = random.randrange(0, display_width)
+
+        if x > cloud_startx and x < cloud_startx + cloud_width and y + hamster_height > cloud_starty and y + hamster_height < cloud_starty + cloud_starty + cloud_height:
+            terminate()
+        if x + hamster_width < cloud_startx + cloud_width and x + hamster_width > cloud_startx and y + hamster_height > cloud_starty and y + hamster_height < cloud_starty + cloud_height:
+            terminate()
             
         pygame.display.update()
         clock.tick(100)
