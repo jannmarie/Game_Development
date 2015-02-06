@@ -18,9 +18,9 @@ HamImg = pygame.image.load('hammy.png')
 hamster_width = 100
 hamster_height = 100
 
-cloud = pygame.image.load('cloud1.png')
+cloud = pygame.image.load('Cloud_1.png')
 cloud_width = 202
-cloud_height = 102 
+cloud_height = 179 
 
 def Hamster(x,y):
     gameDisplay.blit(HamImg,(x,y))
@@ -93,9 +93,20 @@ def game_loop():
             cloud_starty = 600
             cloud_startx = random.randrange(0, display_width)
 
+#Collision Detector
+    #Bottom   
+#-------------------------------A-----------------------------|    |-----------------------------------D-----------------------------------------------------------------|
         if x > cloud_startx and x < cloud_startx + cloud_width and y + hamster_height > cloud_starty and y + hamster_height < cloud_starty + cloud_starty + cloud_height:
             terminate()
+#----------------------------------------------------------B----------------------------------|    |----------------------------------C---------------------------------------------------|
         if x + hamster_width < cloud_startx + cloud_width and x + hamster_width > cloud_startx and y + hamster_height > cloud_starty and y + hamster_height < cloud_starty + cloud_height:
+            terminate()
+    #Top
+#-----------------------------------------A------------------------------------------------|    |-----------------------------------D------------------------------------------------|
+        if cloud_startx + cloud_width > x and cloud_startx + cloud_width < x + hamster_width and cloud_starty + cloud_height > y and cloud_starty + cloud_height < y + hamster_height:
+            terminate()
+#-----------------------------------------B---------------------|  |-----------------------------------C------------------------------------------------|
+        if cloud_startx < x + hamster_width and cloud_startx > x and cloud_starty + cloud_height > y and cloud_starty + cloud_height < x + hamster_height:
             terminate()
             
         pygame.display.update()
