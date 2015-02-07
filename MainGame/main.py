@@ -12,6 +12,9 @@ blue = (16,135,247)
 
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Hamster Fall')
+icon = pygame.image.load('hammy2.png')
+pygame.display.set_icon(icon)
+
 clock = pygame.time.Clock()
 
 HamImg = pygame.image.load('hammy.png')
