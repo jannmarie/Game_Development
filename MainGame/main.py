@@ -15,8 +15,8 @@ pygame.display.set_caption('Hamster Fall')
 clock = pygame.time.Clock()
 
 HamImg = pygame.image.load('hammy.png')
-hamster_width = 100
-hamster_height = 100
+hamster_width = 130
+hamster_height = 172
 
 cloud = pygame.image.load('Cloud_1.png')
 cloud_width = 202
