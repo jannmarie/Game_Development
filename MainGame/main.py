@@ -94,19 +94,9 @@ def game_loop():
             cloud_startx = random.randrange(0, display_width)
 
 #Collision Detector
-    #Bottom   
-#-------------------------------A-----------------------------|    |-----------------------------------D-----------------------------------------------------------------|
-        if x > cloud_startx and x < cloud_startx + cloud_width and y + hamster_height > cloud_starty and y + hamster_height < cloud_starty + cloud_starty + cloud_height:
-            terminate()
-#----------------------------------------------------------B----------------------------------|    |----------------------------------C---------------------------------------------------|
-        if x + hamster_width < cloud_startx + cloud_width and x + hamster_width > cloud_startx and y + hamster_height > cloud_starty and y + hamster_height < cloud_starty + cloud_height:
-            terminate()
-    #Top
-#-----------------------------------------A------------------------------------------------|    |-----------------------------------D------------------------------------------------|
-        if cloud_startx + cloud_width > x and cloud_startx + cloud_width < x + hamster_width and cloud_starty + cloud_height > y and cloud_starty + cloud_height < y + hamster_height:
-            terminate()
-#-----------------------------------------B---------------------|  |-----------------------------------C------------------------------------------------|
-        if cloud_startx < x + hamster_width and cloud_startx > x and cloud_starty + cloud_height > y and cloud_starty + cloud_height < x + hamster_height:
+
+#1-------------------------------A------------------------|   |-----------------------------------D------------------------------------------|  |----------------------------------------------------------B---------------|    |----------------------------------C------------------------------------------| #2|-----------------------------------------A-------------------------------|    |-----------------------------------D--------------------------------------|   |---------------------------B---------------------|   |-----------------------------------C-----------------------------------------|
+        if x>=cloud_startx and x<=cloud_startx+cloud_width and y+hamster_height>=cloud_starty and y+hamster_height<=cloud_starty+cloud_height or x+hamster_width>=cloud_startx and x+hamster_width<=cloud_startx+cloud_width and y+hamster_height>=cloud_starty and y+hamster_height<=cloud_starty+cloud_height or cloud_startx+cloud_width>=x and cloud_startx+cloud_width<=x+hamster_width and cloud_starty+cloud_height>=y and cloud_starty+cloud_height<=y+hamster_height or cloud_startx>=x and cloud_startx<=x+hamster_width and cloud_starty+cloud_height>=y and cloud_starty+cloud_height<=y+hamster_height:
             terminate()
             
         pygame.display.update()
