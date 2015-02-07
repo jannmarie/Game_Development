@@ -1,69 +1,115 @@
 import pygame
 import time
 import random
-
-pygame.init()
-
-display_width = 800
-display_height = 600
+import os
 
 black = (0,0,0)
 blue = (40,190,200)
+red = (255, 0, 0)
+white = (255, 255, 255)
+
+
+class Cloud(pygame.sprite.Sprite):
+    def __init__(self, color, width, height):
+        super().__init__()
+        self.image = pygame.Surface([width, height])
+        self.image.fill(color)
+        self.rect = self.image.get_rect()
+        
+    def reset_pos(self):
+        self.rect.y = 600
+        self.rect.x = random.randrange(0, display_width)
+     
+    def update(self):
+        self.rect.y -= 1
+        if self.rect.y < 0:
+            self.reset_pos()
+
+img_path = os.path.join('C:\Python34', 'hammy.png')
+
+class Player(object):  # represents the bird, not the game
+    def __init__(self):
+        self.image = pygame.image.load(img_path)
+        self.x = 350
+        self.y = 20
+
+    def handle_keys(self):
+        """ Handles Keys """
+        
+        key = pygame.key.get_pressed()
+        dist = 60 
+        if key[pygame.K_DOWN]: # down key
+            self.y += dist # move down
+        elif key[pygame.K_UP]: # up key
+            self.y -= dist # move up
+        if key[pygame.K_RIGHT]: # right key
+            self.x += dist # move right
+        elif key[pygame.K_LEFT]: # left key
+            self.x -= dist # move left
+
+        if self.x > display_width - 100:
+            self.x = display_width - 100
+        if self.x < 0:
+            self.x = 0
+        if self.y > display_height - 100:
+            self.y = display_height - 100
+        if self.y < 0:
+            self.y = 0
+            
+        if key[pygame.K_UP]:
+            if key[pygame.K_LEFT] or key[pygame.K_RIGHT]:
+                self.x = 0
+            if key[pygame.K_DOWN] or key[pygame.K_UP]:
+                self.y = 0
+            
+
+    def draw(self, surface):
+        surface.blit(self.image, (self.x, self.y))
+        
+pygame.init()
+
+black = (0,0,0)
+blue = (40,190,200)
+
+display_width = 800
+display_height = 600
 
 gameDisplay = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('Hamster Fall')
 clock = pygame.time.Clock()
 
-HamImg = pygame.image.load('hammy.png')
-hamster_width = 100
-hamster_height = 100
+player = Player()
+clock = pygame.time.Clock()
 
-def Hamster(x,y):
-    gameDisplay.blit(HamImg,(x,y))
+
+all_sprites_list = pygame.sprite.Group()
+
+for i in range(10):
+    # This represents the cloud
+    block = Cloud(black, 20, 15)
+ 
+    # Set a random location for the block
+    block.rect.x = random.randrange(0, display_width)
+    block.rect.y = random.randrange(display_height)
     
+ 
+    # Add the block to the list of objects
+    all_sprites_list.add(block)
+    
+for i in range(10):
+    block_two = Cloud(red, 20, 15)
+    block_two.rect.x = random.randrange(0, display_width)
+    block_two.rect.y = random.randrange(display_height)
+    all_sprites_list.add(block_two)
+       
 def terminate():
     pygame.quit()
     quit()
 
-def things(thingx, thingy, thingw, thingh, color):
-    pygame.draw.rect(gameDisplay, color, [thingx, thingy, thingw, thingh])
-
-def text_objects(text, font):
-    textSurface = font.render(text, True, black)
-    return textSurface, textSurface.get_rect()
-
-def message_display(text):
-    largeText = pygame.font.Font('freesansbold.ttf',115)
-    TextSurf, TextRect = text_objects(text, largeText)
-    TextRect.center = ((display_width/2),(display_height/2))
-    gameDisplay.blit(TextSurf, TextRect)
- 
-    pygame.display.update()
- 
-    time.sleep(2)
- 
-    game_loop()
-
-
-
-    
-    
-def crash():
-    message_display('You Crashed')
+clock = pygame.time.Clock()
 
 def game_loop():
-    x = (display_width * 0.45)
-    y = (display_height * 0.2)
 
-    x_change = 0
-    y_change = 0
-
-    thing_startx = random.randrange(0, display_width)
-    thing_starty = 600
-    thing_speed = 2
-    thing_width = 100
-    thing_height = 100
-    
     gameExit = False
     while not gameExit:
         
@@ -72,63 +118,16 @@ def game_loop():
             if event.type == pygame.QUIT:
                 gameExit = True
                 terminate()
-                
-            #check for the directions events when keyboard is pressed    
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    x_change = -5
-                if event.key == pygame.K_RIGHT:
-                    x_change = 5
-                if event.key == pygame.K_DOWN:
-                    y_change = 5
-                if event.key == pygame.K_UP:
-                    y_change = -5
-                    
-            #check for the directions events when keyboard is released
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                    x_change = 0
-                if event.key == pygame.K_DOWN or event.key == pygame.K_UP:
-                    y_change = 0
 
-        x += x_change
-        y += y_change
+            player.handle_keys()
                
         gameDisplay.fill(blue)
-
-        #things(thingx, thingy, thingh, color)
-        things(thing_startx, thing_starty, thing_width, thing_height, black)
-        thing_starty -= thing_speed
-        
-        Hamster(x,y)
-
-        if x > display_width - hamster_width:
-            x = display_width - hamster_width
-        if x < 0:
-            x = 0
-        if y >  display_height - hamster_height:
-            y = display_height - hamster_height
-        if y < 0:
-            y = 0
-
-        if thing_starty < 0 - thing_height:
-            thing_starty = 600
-            thing_startx = random.randrange(0, display_width)
-
-   
-        if y < thing_starty+thing_height:
-            print('crossover')
-            if y > thing_starty and y < thing_starty + thing_height or y+hamster_height > thing_starty+ thing_height and y+hamster_height < thing_starty+thing_height:   
-                print('y crossover')
-                crash()
-                
-            if x >  thing_startx and x < thing_startx + thing_width and y > thing_starty and y < thing_starty + thing_height :
-                print('x crossover')
-                crash()
-            if x+hamster_width > thing_startx + thing_width and x + hamster_width < thing_startx+thing_width:
-                print('x crossover')
-                crash()
-      
+        all_sprites_list.update()
+     
+        player.draw(gameDisplay) # draw the bird to the screen
+        all_sprites_list.update()
+        all_sprites_list.draw(gameDisplay)
+         
         pygame.display.update()
         clock.tick(100)
 
