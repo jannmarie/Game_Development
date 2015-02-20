@@ -109,8 +109,6 @@ def game_loop():
 #1-------------------------------A------------------------|   |-----------------------------------D------------------------------------------|  |----------------------------------------------------------B---------------|    |----------------------------------C------------------------------------------| #2|-----------------------------------------A-------------------------------|    |-----------------------------------D--------------------------------------|   |---------------------------B---------------------|   |-----------------------------------C-----------------------------------------|
         if x>=cloud_startx and x<=cloud_startx+cloud_width and y+hamster_height>=cloud_starty and y+hamster_height<=cloud_starty+cloud_height or x+hamster_width>=cloud_startx and x+hamster_width<=cloud_startx+cloud_width and y+hamster_height>=cloud_starty and y+hamster_height<=cloud_starty+cloud_height or cloud_startx+cloud_width>=x and cloud_startx+cloud_width<=x+hamster_width and cloud_starty+cloud_height>=y and cloud_starty+cloud_height<=y+hamster_height or cloud_startx>=x and cloud_startx<=x+hamster_width and cloud_starty+cloud_height>=y and cloud_starty+cloud_height<=y+hamster_height:
             terminate()
-            
-        pygame.display.update()
 
         bgOne_y -= 2
         bgTwo_y -= 2
@@ -119,6 +117,8 @@ def game_loop():
             bgOne_y = bgTwo_y + bgTwo.get_height()
         if bgTwo_y == -1 * bgTwo.get_height():
             bgTwo_y = bgOne_y + bgOne.get_height()
+            
+        pygame.display.update()
         
         clock.tick(60)
 
