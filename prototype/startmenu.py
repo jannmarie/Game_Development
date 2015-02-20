@@ -67,7 +67,12 @@ def button(msg,x,y,w,h,ic,ac,action=None):
         pygame.draw.rect(gameDisplay, ac,(x,y,w,h))
 
         if click[0] == 1 and action != None:
-            action()         
+           action()
+        if action == "play":
+           game_loop()
+        elif action == "quit":
+           pygame.quit()
+           quit()
     else:
         pygame.draw.rect(gameDisplay, ic,(x,y,w,h))
 
@@ -94,7 +99,7 @@ def game_intro():
         gameDisplay.blit(TextSurf, TextRect)
 
         button("PLAY!",150,450,100,50,green,bright_green,game_loop)
-        button("Quit",550,450,100,50,red,bright_red)
+        button("Quit",550,450,100,50,red,bright_red,pygame.quit)
 
         pygame.display.update()
         clock.tick(15)
