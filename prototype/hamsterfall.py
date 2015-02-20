@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 
 black = (0,0,0)
 blue = (40,190,200) 
@@ -24,7 +25,6 @@ class Block(pygame.sprite.Sprite):
     def change_speed(self, hspeed, vspeed):
         self.hspeed += hspeed
         self.vspeed += vspeed
-         
         
     def set_position(self, x, y):
         self.rect.x = x
@@ -59,9 +59,6 @@ class Cloud(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         
     def reset_pos(self):
-        """ Reset position to the top of the screen, at a random x location.
-        Called by update() or the main program loop if there is a collision.
-        """
         self.rect.y = 600
         self.rect.x = random.randrange(0, window_width)
         
@@ -71,11 +68,8 @@ class Cloud(pygame.sprite.Sprite):
             self.rect = self.image.get_rect()
             
     def update(self):
-        """ Called each frame. """
- 
         # Move block down one pixel
         self.rect.y -= 1
- 
         # If block is too far down, reset to top of screen.
         if self.rect.y < -100:
             self.reset_pos()
@@ -161,9 +155,8 @@ if ( __name__ == "__main__" ):
 
         if(pygame.sprite.spritecollide(a_block, block_group, False)):
             window.fill(red)
-            set_message("There is a collision")
-        else:
-            set_message("  ")
+            set_message("Game Over")
+            running = False
          
         window.blit(message, (window_width/2 - message.get_rect().width/2, window_height/2-100))
         player.update()
