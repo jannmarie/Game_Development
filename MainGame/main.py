@@ -45,6 +45,12 @@ def game_loop():
     cloud_startx = random.randrange(0, display_width)
     cloud_starty = 600
     cloud_speed = 2
+
+    bgOne = pygame.image.load('background_sample.png')
+    bgTwo = pygame.image.load('background_sample.png')
+
+    bgOne_y = 0
+    bgTwo_y = bgOne.get_height()
     
     gameExit = False
     while not gameExit:
@@ -75,8 +81,10 @@ def game_loop():
 
         x += x_change
         y += y_change
-               
-        gameDisplay.fill(blue)
+
+        gameDisplay.blit(bgOne, (0, bgOne_y))
+        gameDisplay.blit(bgTwo, (0, bgTwo_y))
+        
 
         Cloud(cloud_startx, cloud_starty)
         cloud_starty -= cloud_speed
@@ -103,7 +111,16 @@ def game_loop():
             terminate()
             
         pygame.display.update()
-        clock.tick(100)
+
+        bgOne_y -= 2
+        bgTwo_y -= 2
+        
+        if bgOne_y == -1 * bgOne.get_height():
+            bgOne_y = bgTwo_y + bgTwo.get_height()
+        if bgTwo_y == -1 * bgTwo.get_height():
+            bgTwo_y = bgOne_y + bgOne.get_height()
+        
+        clock.tick(60)
 
 game_loop()
 
