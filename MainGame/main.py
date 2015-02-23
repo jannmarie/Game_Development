@@ -67,20 +67,22 @@ def terminate():
     pygame.quit()
     quit()
 
-if( __name__ == "__main__" ):
-    pygame.init()
+pygame.init()
 
-    screen_width = 800
-    screen_height = 600
+screen_width = 800
+screen_height = 600
 
-    screen = pygame.display.set_mode((screen_width,screen_height))
-    pygame.display.set_caption('Hamster Fall')
-    icon = pygame.image.load('hammy.png')
-    pygame.display.set_icon(icon)
+screen = pygame.display.set_mode((screen_width,screen_height))
+pygame.display.set_caption('Hamster Fall')
+icon = pygame.image.load('hammy.png')
+pygame.display.set_icon(icon)
 
-    clock = pygame.time.Clock()
-    frames_per_second = 60
+clock = pygame.time.Clock()
+frames_per_second = 60
 
+life = 3
+
+def game_loop(life):
     playergroup = pygame.sprite.Group()
     badcloudsgroup = pygame.sprite.Group()
 
@@ -104,6 +106,9 @@ if( __name__ == "__main__" ):
         
 
     running = True
+    gameOver = False
+    lives = life
+
 
     while (running):
         for event in pygame.event.get():
@@ -138,8 +143,13 @@ if( __name__ == "__main__" ):
         badcloud1.update()
         badcloud2.update()
 
-        if(pygame.sprite.spritecollide(hammy, badcloudsgroup, False)):
-            running = False
+        collision = pygame.sprite.spritecollide(hammy, badcloudsgroup, False)
+
+        for x in collision:
+            lives -= 1
+            time.sleep(2)
+            game_loop(lives)
+        if lives == 0:
             terminate()
         
         playergroup.update()
@@ -149,3 +159,4 @@ if( __name__ == "__main__" ):
                 
         pygame.display.update()
 
+game_loop(life)
