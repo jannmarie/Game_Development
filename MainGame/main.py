@@ -13,8 +13,8 @@ BACKGROUNDCOLOR = (0, 175, 175)
 
 frames_per_second = 40
 
-badcloud_minsize = 10
-badcloud_maxsize = 40
+badcloud_minsize = 50
+badcloud_maxsize = 100
 badcloud_minspeed = 1
 badcloud_maxspeed = 8
 addnew_badcloud = 6
@@ -37,9 +37,11 @@ gameOverSound = pygame.mixer.Sound('gameover.wav')
 pygame.mixer.music.load('background.mid')
 
 #Images
-hamsterImage = pygame.image.load('hamy.png')
+hamsterImage = pygame.image.load('hammy.png')
 hamsterRect = hamsterImage.get_rect()
 badcloudsImage = pygame.image.load('cloud.png')
+
+#Background
 
 
 def terminate():
@@ -117,6 +119,12 @@ def game_loop():
         badcloudsAddCounter = 0
         pygame.mixer.music.play(-1, 0.0)
 
+        bgOne = pygame.image.load('background_sample.png')
+        bgTwo = pygame.image.load('background_sample.png')
+
+        bgOne_y = 0
+        bgTwo_y = bgOne.get_height()
+
         while True: # the game loop runs while the game part is playing
             score += 1 # increase score
             pygame.mouse.set_visible(False)
@@ -165,6 +173,8 @@ def game_loop():
                     # If the mouse moves, move the player where the cursor is.
                     hamsterRect.move_ip(event.pos[0] - hamsterRect.centerx, event.pos[1] - hamsterRect.centery)
 
+            
+            
             # Add new badclouds at the top of the screen, if needed.
             if not reverseCheat and not slowCheat:
                 badcloudsAddCounter += 1
@@ -206,8 +216,16 @@ def game_loop():
                 if b['rect'].top > screen_height:
                     cloud_group.remove(b)
 
-            # Draw the game world on the window.
-            screen.fill(BACKGROUNDCOLOR)
+            screen.blit(bgOne, (0, bgOne_y))
+            screen.blit(bgTwo, (0, bgTwo_y))
+
+            bgOne_y -= 2
+            bgTwo_y -= 2
+            
+            if bgOne_y == -1 * bgOne.get_height():
+                bgOne_y = bgTwo_y + bgTwo.get_height()
+            if bgTwo_y == -1 * bgTwo.get_height():
+                bgTwo_y = bgOne_y + bgOne.get_height()
 
             # Draw the score and top score.
             drawText('Score: %s' % (score), font, screen, 10, 0)
@@ -219,6 +237,7 @@ def game_loop():
             # Draw each bad cloud
             for b in cloud_group:
                 screen.blit(b['surface'], b['rect'])
+
 
             pygame.display.update()
             
@@ -237,8 +256,10 @@ def game_loop():
 
         drawText('GAME OVER', font, screen, (screen_width / 3), (screen_height / 3))
         drawText('Press a key to play again.', font, screen, (screen_width / 3) - 80, (screen_height / 3) + 50)
+
+       
+
         pygame.display.update()
-    #    waitForPlayerToPressKey()
 
         gameOverSound.stop()
 
