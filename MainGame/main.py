@@ -33,14 +33,14 @@ pygame.mouse.set_visible(True)
 font = pygame.font.SysFont(None, 48)
 
 #Sounds
-gameOverSound = pygame.mixer.Sound('gameover.wav')
-pygame.mixer.music.load('temp_background.wav')
+gameOverSound = pygame.mixer.Sound('sounds\\gameover.wav')
+pygame.mixer.music.load('sounds\\temp_background.wav')
 
 #Images
-hamsterImage = pygame.image.load('hammy.png')
+hamsterImage = pygame.image.load('images\\hammy.png')
 hamsterRect = hamsterImage.get_rect()
-badcloudsImage = pygame.image.load('cloud.png')
-another_badcloudsImage = pygame.image.load('another_cloud.png')
+badcloudsImage = pygame.image.load('images\\cloud.png')
+another_badcloudsImage = pygame.image.load('images\\another_cloud.png')
 
 def terminate():
     pygame.quit()
@@ -99,12 +99,17 @@ def game_intro():
                 if event.key == K_ESCAPE:
                     intro = False
                     
-        start = startscreen('startmenu_background.png')
-        play_button = start.button(96,103,700,10,'play.png','play_mouseover.png',game_loop)
-        quit_button = start.button(104,103,700,450,'quit.png','quit_mouseover.png',terminate)
-
+        start = startscreen('images\\startmenu_background.png')
+        play_button = start.button(65,78,705,15,'images\\play.png','images\\play_mouseover.png',game_loop)
+        about_button = start.button(81,78,705,130,'images\\about.png', 'images\\about_mouseover.png', None)
+        highestscore_button = start.button(75,75,705,255,'images\\highestscore.png', 'images\\highestscore_mouseover.png', None)
+        settings_button = start.button(70,70,705,369, 'images\\settings.png', 'images\\settings_mouseover.png',None)
+        quit_button = start.button(70,70,705,481,'images\\quit.png','images\\quit_mouseover.png',terminate)
+        
         mainClock.tick(frames_per_second)
         pygame.display.update()
+
+    terminate()
         
 def game_loop():
     topScore = 0
@@ -119,8 +124,8 @@ def game_loop():
         badcloudsAddCounter = 0
         pygame.mixer.music.play(-1, 0.0)
 
-        bgOne = pygame.image.load('background_sample.png')
-        bgTwo = pygame.image.load('background_sample.png')
+        bgOne = pygame.image.load('images\\background_sample.png')
+        bgTwo = pygame.image.load('images\\background_sample.png')
 
         bgOne_y = 0
         bgTwo_y = bgOne.get_height()
