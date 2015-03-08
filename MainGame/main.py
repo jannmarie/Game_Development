@@ -41,9 +41,6 @@ hamsterImage = pygame.image.load('hammy.png')
 hamsterRect = hamsterImage.get_rect()
 badcloudsImage = pygame.image.load('cloud.png')
 
-#Background
-
-
 def terminate():
     pygame.quit()
     sys.exit()
@@ -94,17 +91,19 @@ def game_intro():
     while intro:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
+                intro = False
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    terminate()
+                    intro = False
         
         start = startscreen('startmenu_background.png')
         play_button = start.button(96,103,700,10,'play.png','play_mouseover.png',game_loop)
         quit_button = start.button(104,103,700,450,'quit.png','quit_mouseover.png',terminate)
-
+        
         mainClock.tick(frames_per_second)
         pygame.display.update()
+
+    terminate()
         
 def game_loop():
     topScore = 0
