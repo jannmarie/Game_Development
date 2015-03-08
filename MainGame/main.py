@@ -17,7 +17,7 @@ badcloud_minsize = 50
 badcloud_maxsize = 100
 badcloud_minspeed = 1
 badcloud_maxspeed = 8
-addnew_badcloud = 6
+addnew_badcloud = 20
 
 hamsterspeed = 5
 
@@ -34,12 +34,13 @@ font = pygame.font.SysFont(None, 48)
 
 #Sounds
 gameOverSound = pygame.mixer.Sound('gameover.wav')
-pygame.mixer.music.load('background.mid')
+pygame.mixer.music.load('temp_background.wav')
 
 #Images
 hamsterImage = pygame.image.load('hammy.png')
 hamsterRect = hamsterImage.get_rect()
 badcloudsImage = pygame.image.load('cloud.png')
+another_badcloudsImage = pygame.image.load('another_cloud.png')
 
 def terminate():
     pygame.quit()
@@ -59,6 +60,7 @@ def drawText(text, font, surface, x, y):
     
 class startscreen():
     def __init__(self, background):
+        super().__init__()
         self.image = pygame.Surface((screen_width, screen_height))
         self.image = pygame.image.load(background)
         screen.blit(self.image, (0,0))
@@ -88,6 +90,7 @@ class startscreen():
 
 def game_intro():
     intro = True
+    
     while intro:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -95,15 +98,13 @@ def game_intro():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     intro = False
-        
+                    
         start = startscreen('startmenu_background.png')
         play_button = start.button(96,103,700,10,'play.png','play_mouseover.png',game_loop)
         quit_button = start.button(104,103,700,450,'quit.png','quit_mouseover.png',terminate)
-        
+
         mainClock.tick(frames_per_second)
         pygame.display.update()
-
-    terminate()
         
 def game_loop():
     topScore = 0
@@ -181,12 +182,20 @@ def game_loop():
             if badcloudsAddCounter == addnew_badcloud:
                 badcloudsAddCounter = 0
                 badclouds_size = random.randint(badcloud_minsize, badcloud_maxsize)
+                
                 new_badclouds = {'rect': pygame.Rect(random.randint(0, screen_width-badclouds_size), screen_height, badclouds_size, badclouds_size), #left,top,width,height
                             'speed': random.randint(badcloud_minspeed, badcloud_maxspeed),
                             'surface':pygame.transform.scale(badcloudsImage, (badclouds_size, badclouds_size)),
                             }
 
                 cloud_group.append(new_badclouds)
+                
+                another_new_badclouds = {'rect': pygame.Rect(random.randint(0, screen_width-badclouds_size), screen_height, badclouds_size, badclouds_size), #left,top,width,height
+                            'speed': random.randint(badcloud_minspeed, badcloud_maxspeed),
+                            'surface':pygame.transform.scale(another_badcloudsImage, (badclouds_size, badclouds_size)),
+                            }
+
+                cloud_group.append(another_new_badclouds)
 
             # Move the hamster around.
             if moveLeft and hamsterRect.left > 0:
