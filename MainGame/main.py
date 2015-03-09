@@ -7,7 +7,7 @@ pygame.init()
 screen_width = 800
 screen_height = 600
 
-color = (0, 0, 200)
+color = (0,255,0)
 TEXTCOLOR = (255, 255, 255)
 BACKGROUNDCOLOR = (0, 175, 175)
 
@@ -23,7 +23,6 @@ hamsterspeed = 5
 
 mainClock = pygame.time.Clock()
 
-pause = False
 
 #Pygame, Window, Mouse cursor
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -59,64 +58,36 @@ def drawText(text, font, surface, x, y):
     textrect.topleft = (x, y)
     surface.blit(textobj, textrect)
     
-def startscreen(image):
-   background = pygame.image.load(image)
-   screen.blit(background, (0,0))
+class startscreen():
+    def __init__(self, background):
+        super().__init__()
+        self.image = pygame.Surface((screen_width, screen_height))
+        self.image = pygame.image.load(background)
+        screen.blit(self.image, (0,0))
 
-def button(image_width,image_height,x,y,image_name,image_name_over,action=None):
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
+    def button(self, image_width,image_height,x,y,image_name,image_name_over,action=None):
+        self.mouse = pygame.mouse.get_pos()
+        self.click = pygame.mouse.get_pressed()
+        self.image = pygame.Surface((image_width, image_height))
 
-    if x + image_width > mouse[0] > x and y + image_height > mouse[1] > y:
-        image = pygame.image.load(image_name_over)
+        if x + image_width > self.mouse[0] > x and y + image_height > self.mouse[1] > y:
+            self.image = pygame.image.load(image_name_over)
 
-        if click[0] == 1 and action !=None:
-            action()
-        if action == "play":
-            game_loop()
-        elif action == "quit":
-            terminate()
-    else:
-        image = pygame.image.load(image_name)
-
-    screen.blit(image, (x,y))
-    
-def unpause():
-    global pause
-    pause = False
-
-#pygame.transform.scale(Surface, size) -> Surface
-
-def paused():
-    global pause
-    pygame.mouse.set_visible(True)
-    while pause:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if self.click[0] == 1 and action !=None:
+                action()
+            if action == "play":
+                game_loop()
+            elif action == "quit":
                 terminate()
-                #pause = False
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    terminate()
-                    #pause = False
+        else:
+            self.image = pygame.image.load(image_name)
 
-        screen.fill(color)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
-        replay_button = pygame.image.load('images\\restart.jpg')
-        continue_button = pygame.image.load('images\\replay.png')
-        back_button = pygame.image.load('images\\backtomenu.png')
+        screen.blit(self.image, (self.rect.x, self.rect.y))
 
-        continue_x = screen_width/2 - continue_button.get_width()/2
-        replay_x = continue_x - (replay_button.get_width() + 80)
-        back_x = continue_x + continue_button.get_width()/2 + 80
-        
-        continue_button = button(50,60,continue_x,400,'images\\replay.png','images\\replay_mouseover.png',unpause)
-        replay_button = button(50,50,replay_x,400,'images\\restart.jpg','images\\restart_mouseover.jpg', game_loop)
-        back_button = button(50,50,back_x,400,'images\\backtomenu.png', 'images\\backtomenu_mouseover.png', terminate) #DI PA TAPOS//dapat balik sa startmenu..
-               
-        mainClock.tick(frames_per_second)
-        pygame.display.update()
-    
 def game_intro():
     intro = True
     
@@ -128,21 +99,19 @@ def game_intro():
                 if event.key == K_ESCAPE:
                     intro = False
                     
-        startscreen('images\\startmenu_background.png')
-        play_button = button(65,78,705,15,'images\\play.png','images\\play_mouseover.png',game_loop)
-        about_button = button(81,78,705,130,'images\\about.png', 'images\\about_mouseover.png', None)
-        highestscore_button = button(75,75,705,255,'images\\highestscore.png', 'images\\highestscore_mouseover.png', None)
-        settings_button = button(70,70,705,369, 'images\\settings.png', 'images\\settings_mouseover.png',None)
-        quit_button = button(70,70,705,481,'images\\quit.png','images\\quit_mouseover.png',terminate)
+        start = startscreen('images\\startmenu_background.png')
+        play_button = start.button(65,78,705,15,'images\\play.png','images\\play_mouseover.png',game_loop)
+        about_button = start.button(81,78,705,130,'images\\about.png', 'images\\about_mouseover.png', None)
+        highestscore_button = start.button(75,75,705,255,'images\\highestscore.png', 'images\\highestscore_mouseover.png', None)
+        settings_button = start.button(70,70,705,369, 'images\\settings.png', 'images\\settings_mouseover.png',None)
+        quit_button = start.button(70,70,705,481,'images\\quit.png','images\\quit_mouseover.png',terminate)
         
         mainClock.tick(frames_per_second)
         pygame.display.update()
 
     terminate()
-
+        
 def game_loop():
-    global pause
-    
     topScore = 0
     while True:
         # set up the start of the game
@@ -185,9 +154,6 @@ def game_loop():
                     if event.key == K_DOWN or event.key == ord('s'):
                         moveUp = False
                         moveDown = True
-                    if event.key == K_p:
-                        pause = True
-                        paused()
 
                 if event.type == KEYUP:
                     if event.key == ord('z'):
