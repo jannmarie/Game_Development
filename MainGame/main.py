@@ -67,12 +67,20 @@ def drawText(text, font, surface, x, y):
 def mainmenu():
     background = pygame.image.load('images\\startmenu_background.png')
     screen.blit(background, (0,0))
+<<<<<<< HEAD
     startMenuSound.play()
 
     play_button = button(65,78,705,15,'images\\play.png','images\\play_mouseover.png',game_loop)
     about_button = button(81,78,705,150,'images\\about.png', 'images\\about_mouseover.png', about)
     #highestscore_button = button(75,75,705,255,'images\\highestscore.png', 'images\\highestscore_mouseover.png', None)
     settings_button = button(70,70,705,309, 'images\\help.png', 'images\\help_mouseover.png',howtoplay)
+=======
+
+    play_button = button(65,78,705,15,'images\\play.png','images\\play_mouseover.png',game_loop)
+    about_button = button(81,78,705,150,'images\\about.png', 'images\\about_mouseover.png', None)
+    #highestscore_button = button(75,75,705,255,'images\\highestscore.png', 'images\\highestscore_mouseover.png', None)
+    settings_button = button(70,70,705,309, 'images\\help.png', 'images\\help_mouseover.png',None)
+>>>>>>> 4c02c517e75a35a07e941b74f6c55a27bb7e183b
     quit_button = button(70,70,705,460,'images\\quit.png','images\\quit_mouseover.png',terminate)
 
     mainClock.tick(frames_per_second)
@@ -134,6 +142,7 @@ def paused():
         pygame.display.update()
         pygame.mixer.music.pause()
 
+<<<<<<< HEAD
 def about():
     about = True
     while about:
@@ -178,6 +187,11 @@ def game_over():
     gameover = True
     pygame.mouse.set_visible(True)
     rainSound.stop()
+=======
+def game_over():
+    gameover = True
+    pygame.mouse.set_visible(True)
+>>>>>>> 4c02c517e75a35a07e941b74f6c55a27bb7e183b
     while gameover:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -186,6 +200,11 @@ def game_over():
                 if event.key == K_ESCAPE:
                     gameover = False
 
+<<<<<<< HEAD
+=======
+        pygame.mixer.music.stop()
+        gameOverSound.play()
+>>>>>>> 4c02c517e75a35a07e941b74f6c55a27bb7e183b
 
         background = pygame.image.load('images\\gameover.png')
         screen.blit(background, (0,0))
@@ -194,12 +213,20 @@ def game_over():
         backtomenu = button(232,33,screen_width/2 - pygame.image.load('images\\gameover_backtomenu.png').get_width()/2,450,'images\\gameover_backtomenu.png','images\\gameover_backtomenu_mouseover.png',game_intro)
         quitna = button(79,31,700-pygame.image.load('images\\gameover_quit.png').get_width(),450,'images\\gameover_quit.png','images\\gameover_quit_mouseover.png',terminate)
 
+<<<<<<< HEAD
         pygame.mixer.music.stop()
         gameOverSound.play()
         pygame.display.update()
         
         gameOverSound.stop()
         
+=======
+        #drawText('GAME OVER', font, screen, (screen_width / 3), (screen_height / 3))
+        #drawText('Press a key to play again.', font, screen, (screen_width / 3) - 80, (screen_height / 3) + 50)
+        
+        pygame.display.update()
+        gameOverSound.stop()
+>>>>>>> 4c02c517e75a35a07e941b74f6c55a27bb7e183b
             
     terminate()
     
