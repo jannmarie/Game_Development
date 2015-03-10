@@ -65,9 +65,9 @@ def mainmenu():
     screen.blit(background, (0,0))
 
     play_button = button(65,78,705,15,'images\\play.png','images\\play_mouseover.png',game_loop)
-    about_button = button(81,78,705,150,'images\\about.png', 'images\\about_mouseover.png', None)
+    about_button = button(81,78,705,150,'images\\about.png', 'images\\about_mouseover.png', about)
     #highestscore_button = button(75,75,705,255,'images\\highestscore.png', 'images\\highestscore_mouseover.png', None)
-    settings_button = button(70,70,705,309, 'images\\help.png', 'images\\help_mouseover.png',None)
+    settings_button = button(70,70,705,309, 'images\\help.png', 'images\\help_mouseover.png',howtoplay)
     quit_button = button(70,70,705,460,'images\\quit.png','images\\quit_mouseover.png',terminate)
 
     mainClock.tick(frames_per_second)
@@ -128,6 +128,46 @@ def paused():
         mainClock.tick(frames_per_second)
         pygame.display.update()
         pygame.mixer.music.pause()
+
+def about():
+    about = True
+    while about:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                about = False
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    about = False
+
+        background = pygame.image.load('images\\aboutpage.png')
+        screen.blit(background, (0,0))
+
+        back = button(77,26,600,500,'images\\about_back.png','images\\about_back_mouseover.png',game_intro)
+
+        #mainClock.tick(frames_per_second)
+        pygame.display.update()
+
+    terminate()
+
+def howtoplay():
+    howto = True
+    while howto:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                howto = False
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    howto = False
+
+        background = pygame.image.load('images\\helppage.png')
+        screen.blit(background, (0,0))
+
+        howtop = button(77,26,600,500,'images\\about_back.png','images\\about_back_mouseover.png',game_intro)
+
+        #mainClock.tick(frames_per_second)
+        pygame.display.update()
+
+    terminate()
 
 def game_over():
     gameover = True
