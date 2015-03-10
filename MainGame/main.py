@@ -1,13 +1,13 @@
 import pygame, random, sys
+import time
 from pygame.locals import *
-
+pygame.mixer.pre_init(44100, -16, 2, 2048)
 pygame.init()
 
 #initializations
 screen_width = 800
 screen_height = 600
 
-color = (0, 0, 200)
 TEXTCOLOR = (255, 255, 255)
 BACKGROUNDCOLOR = (0, 175, 175)
 
@@ -17,13 +17,14 @@ badcloud_minsize = 50
 badcloud_maxsize = 100
 badcloud_minspeed = 1
 badcloud_maxspeed = 8
-addnew_badcloud = 20
+addnew_badcloud = 30
 
 hamsterspeed = 5
-
 mainClock = pygame.time.Clock()
 
+#globals
 pause = False
+highest_score = 0
 
 #Pygame, Window, Mouse cursor
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -34,14 +35,18 @@ pygame.mouse.set_visible(True)
 font = pygame.font.SysFont(None, 48)
 
 #Sounds
+flyingSound = pygame.mixer.Sound('sounds\\flying_sound.wav')
+rainSound = pygame.mixer.Sound('sounds\\rain.wav')
 gameOverSound = pygame.mixer.Sound('sounds\\gameover.wav')
-pygame.mixer.music.load('sounds\\temp_background.wav')
+startMenuSound = pygame.mixer.Sound('sounds\\happy_background.wav')
+pygame.mixer.music.load('sounds\\game_background.wav')
 
 #Images
 hamsterImage = pygame.image.load('images\\hammy.png')
 hamsterRect = hamsterImage.get_rect()
 badcloudsImage = pygame.image.load('images\\cloud.png')
 another_badcloudsImage = pygame.image.load('images\\another_cloud.png')
+a_badcloudsImage = pygame.image.load('images\\a_cloud.png')
 
 def terminate():
     pygame.quit()
@@ -58,15 +63,32 @@ def drawText(text, font, surface, x, y):
     textrect = textobj.get_rect()
     textrect.topleft = (x, y)
     surface.blit(textobj, textrect)
-    
-def startscreen(image):
-   background = pygame.image.load(image)
-   screen.blit(background, (0,0))
 
+def mainmenu():
+    background = pygame.image.load('images\\startmenu_background.png')
+    screen.blit(background, (0,0))
+    startMenuSound.play()
+
+    play_button = button(65,78,705,15,'images\\play.png','images\\play_mouseover.png',game_loop)
+    about_button = button(81,78,705,150,'images\\about.png', 'images\\about_mouseover.png', about)
+    #highestscore_button = button(75,75,705,255,'images\\highestscore.png', 'images\\highestscore_mouseover.png', None)
+    settings_button = button(70,70,705,309, 'images\\help.png', 'images\\help_mouseover.png',howtoplay)
+    quit_button = button(70,70,705,460,'images\\quit.png','images\\quit_mouseover.png',terminate)
+
+    mainClock.tick(frames_per_second)
+    pygame.display.update()
+    
 def button(image_width,image_height,x,y,image_name,image_name_over,action=None):
+    global pause
+    
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
 
+    #check if its a menu button
+    filename = image_name
+    if filename == 'images\\menu.png':
+        pause = True
+        
     if x + image_width > mouse[0] > x and y + image_height > mouse[1] > y:
         image = pygame.image.load(image_name_over)
 
@@ -84,8 +106,7 @@ def button(image_width,image_height,x,y,image_name,image_name_over,action=None):
 def unpause():
     global pause
     pause = False
-
-#pygame.transform.scale(Surface, size) -> Surface
+    pygame.mixer.music.unpause()
 
 def paused():
     global pause
@@ -94,28 +115,96 @@ def paused():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 terminate()
-                #pause = False
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     terminate()
-                    #pause = False
 
-        screen.fill(color)
+        background = pygame.image.load('images\\pause_menu.png')
+        screen.blit(background, (0,0))
 
-        replay_button = pygame.image.load('images\\restart.jpg')
-        continue_button = pygame.image.load('images\\replay.png')
-        back_button = pygame.image.load('images\\backtomenu.png')
+        transparent_button = pygame.image.load('images\\transparent.png')
+        button_x = screen_width/2 - transparent_button.get_width()/2
 
-        continue_x = screen_width/2 - continue_button.get_width()/2
-        replay_x = continue_x - (replay_button.get_width() + 80)
-        back_x = continue_x + continue_button.get_width()/2 + 80
-        
-        continue_button = button(50,60,continue_x,400,'images\\replay.png','images\\replay_mouseover.png',unpause)
-        replay_button = button(50,50,replay_x,400,'images\\restart.jpg','images\\restart_mouseover.jpg', game_loop)
-        back_button = button(50,50,back_x,400,'images\\backtomenu.png', 'images\\backtomenu_mouseover.png', terminate) #DI PA TAPOS//dapat balik sa startmenu..
-               
+        howtoplay = button(287,107,button_x,125,'images\\transparent.png','images\\mouseover.png')
+        mainmenu = button(287,107,button_x,232,'images\\transparent.png','images\\mouseover.png',game_intro)
+        restart = button(287,107,button_x,339,'images\\transparent.png','images\\mouseover.png',game_loop)
+        resume = button(287,107,button_x,446,'images\\transparent.png','images\\mouseover.png',unpause)  
+
         mainClock.tick(frames_per_second)
         pygame.display.update()
+        pygame.mixer.music.pause()
+
+def about():
+    about = True
+    while about:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                about = False
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    about = False
+
+        background = pygame.image.load('images\\aboutpage.png')
+        screen.blit(background, (0,0))
+
+        back = button(77,26,600,500,'images\\about_back.png','images\\about_back_mouseover.png',game_intro)
+
+        #mainClock.tick(frames_per_second)
+        pygame.display.update()
+
+    terminate()
+
+def howtoplay():
+    howto = True
+    while howto:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                howto = False
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    howto = False
+
+        background = pygame.image.load('images\\helppage.png')
+        screen.blit(background, (0,0))
+
+        howtop = button(77,26,600,500,'images\\about_back.png','images\\about_back_mouseover.png',game_intro)
+
+        #mainClock.tick(frames_per_second)
+        pygame.display.update()
+
+    terminate()
+
+def game_over():
+    gameover = True
+    pygame.mouse.set_visible(True)
+    rainSound.stop()
+    while gameover:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                gameover = False
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    gameover = False
+
+
+        background = pygame.image.load('images\\gameover.png')
+        screen.blit(background, (0,0))
+
+        replay = button(104,30,100,450,'images\\gameover_retry.png','images\\gameover_retry_mouseover.png',game_loop)
+        backtomenu = button(232,33,screen_width/2 - pygame.image.load('images\\gameover_backtomenu.png').get_width()/2,450,'images\\gameover_backtomenu.png','images\\gameover_backtomenu_mouseover.png',game_intro)
+        quitna = button(79,31,700-pygame.image.load('images\\gameover_quit.png').get_width(),450,'images\\gameover_quit.png','images\\gameover_quit_mouseover.png',terminate)
+
+        pygame.mixer.music.stop()
+        gameOverSound.play()
+        pygame.display.update()
+        
+        gameOverSound.stop()
+        
+            
+    terminate()
+    
+    #time.sleep(5)
+    #game_loop()
     
 def game_intro():
     intro = True
@@ -127,25 +216,15 @@ def game_intro():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     intro = False
-                    
-        startscreen('images\\startmenu_background.png')
-        play_button = button(65,78,705,15,'images\\play.png','images\\play_mouseover.png',game_loop)
-        about_button = button(81,78,705,130,'images\\about.png', 'images\\about_mouseover.png', None)
-        highestscore_button = button(75,75,705,255,'images\\highestscore.png', 'images\\highestscore_mouseover.png', None)
-        settings_button = button(70,70,705,369, 'images\\settings.png', 'images\\settings_mouseover.png',None)
-        quit_button = button(70,70,705,481,'images\\quit.png','images\\quit_mouseover.png',terminate)
-        
-        mainClock.tick(frames_per_second)
-        pygame.display.update()
 
+        mainmenu()         
     terminate()
 
 def game_loop():
     global pause
-    
     topScore = 0
+
     while True:
-        # set up the start of the game
         
         cloud_group = []
         score = 0
@@ -153,6 +232,7 @@ def game_loop():
         moveLeft = moveRight = moveUp = moveDown = False
         reverseCheat = slowCheat = False
         badcloudsAddCounter = 0
+        startMenuSound.stop()
         pygame.mixer.music.play(-1, 0.0)
 
         bgOne = pygame.image.load('images\\background_sample.png')
@@ -161,13 +241,12 @@ def game_loop():
         bgOne_y = 0
         bgTwo_y = bgOne.get_height()
 
-        while True: # the game loop runs while the game part is playing
-            score += 1 # increase score
+        while True:
+            score += 1
             pygame.mouse.set_visible(False)
             for event in pygame.event.get():
                 if event.type == QUIT:
                     terminate()
-
                 if event.type == KEYDOWN:
                     if event.key == ord('z'):
                         reverseCheat = True
@@ -185,10 +264,9 @@ def game_loop():
                     if event.key == K_DOWN or event.key == ord('s'):
                         moveUp = False
                         moveDown = True
-                    if event.key == K_p:
+                    if event.key == K_SPACE:
                         pause = True
                         paused()
-
                 if event.type == KEYUP:
                     if event.key == ord('z'):
                         reverseCheat = False
@@ -219,6 +297,7 @@ def game_loop():
                 badcloudsAddCounter += 1
                 
             if badcloudsAddCounter == addnew_badcloud:
+                rainSound.play()
                 badcloudsAddCounter = 0
                 badclouds_size = random.randint(badcloud_minsize, badcloud_maxsize)
                 
@@ -235,6 +314,13 @@ def game_loop():
                             }
 
                 cloud_group.append(another_new_badclouds)
+
+                a_new_badclouds = {'rect': pygame.Rect(random.randint(0, screen_width-badclouds_size), screen_height, badclouds_size, badclouds_size), #left,top,width,height
+                            'speed': random.randint(badcloud_minspeed, badcloud_maxspeed),
+                            'surface':pygame.transform.scale(a_badcloudsImage, (badclouds_size, badclouds_size)),
+                            }
+
+                cloud_group.append(a_new_badclouds)
 
             # Move the hamster around.
             if moveLeft and hamsterRect.left > 0:
@@ -266,6 +352,9 @@ def game_loop():
             screen.blit(bgOne, (0, bgOne_y))
             screen.blit(bgTwo, (0, bgTwo_y))
 
+            #Menu button/Pause
+            button(119,59,0,0,'images\\menu.png','images\\menu_mouseover.png',paused)
+
             bgOne_y -= 2
             bgTwo_y -= 2
             
@@ -275,11 +364,13 @@ def game_loop():
                 bgTwo_y = bgOne_y + bgOne.get_height()
 
             # Draw the score and top score.
-            drawText('Score: %s' % (score), font, screen, 10, 0)
-            drawText('Top Score: %s' % (topScore), font, screen, 10, 40)
+            drawText('Score: %s' % (score), font, screen, 120, 0)
+            drawText('Top Score: %s' % (topScore), font, screen, 300, 0)
 
             # Draw the hamster rectangle
             screen.blit(hamsterImage, hamsterRect)
+
+            
 
             # Draw each bad cloud
             for b in cloud_group:
@@ -295,20 +386,8 @@ def game_loop():
                 break
 
             mainClock.tick(frames_per_second)
-                
 
-        # Stop the game and show the "Game Over" screen.
-        pygame.mixer.music.stop()
-        gameOverSound.play()
-
-        drawText('GAME OVER', font, screen, (screen_width / 3), (screen_height / 3))
-        drawText('Press a key to play again.', font, screen, (screen_width / 3) - 80, (screen_height / 3) + 50)
-
-       
-
-        pygame.display.update()
-
-        gameOverSound.stop()
+        game_over()
 
 game_intro()
 game_loop()
