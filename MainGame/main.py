@@ -24,7 +24,7 @@ mainClock = pygame.time.Clock()
 
 #globals
 pause = False
-score = 0
+highest_score = 0
 
 #Pygame, Window, Mouse cursor
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -136,7 +136,7 @@ def paused():
         transparent_button = pygame.image.load('images\\transparent.png')
         button_x = screen_width/2 - transparent_button.get_width()/2
 
-        howtopla = button(287,107,button_x,125,'images\\transparent.png','images\\mouseover.png',howtoplay)
+        howtoplay = button(287,107,button_x,125,'images\\transparent.png','images\\mouseover.png')
         mainmenu = button(287,107,button_x,232,'images\\transparent.png','images\\mouseover.png',game_intro)
         restart = button(287,107,button_x,339,'images\\transparent.png','images\\mouseover.png',game_loop)
         resume = button(287,107,button_x,446,'images\\transparent.png','images\\mouseover.png',unpause)  
@@ -167,7 +167,6 @@ def about():
 
 def howtoplay():
     howto = True
-    
     while howto:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -180,7 +179,8 @@ def howtoplay():
         screen.blit(background, (0,0))
 
         howtop = button(77,26,600,500,'images\\about_back.png','images\\about_back_mouseover.png',game_intro)
-       
+
+        #mainClock.tick(frames_per_second)
         pygame.display.update()
 
     terminate()
@@ -189,11 +189,8 @@ def game_over():
     gameover = True
     pygame.mouse.set_visible(True)
     rainSound.stop()
-    
 
 def game_over():
-    global score
-    
     gameover = True
     pygame.mouse.set_visible(True)
 
@@ -212,8 +209,6 @@ def game_over():
 
         background = pygame.image.load('images\\gameover.png')
         screen.blit(background, (0,0))
-
-        drawText('Score: %s' % (score), font, screen, 320, 350)
 
         replay = button(104,30,100,450,'images\\gameover_retry.png','images\\gameover_retry_mouseover.png',game_loop)
         backtomenu = button(232,33,screen_width/2 - pygame.image.load('images\\gameover_backtomenu.png').get_width()/2,450,'images\\gameover_backtomenu.png','images\\gameover_backtomenu_mouseover.png',game_intro)
@@ -255,7 +250,6 @@ def game_intro():
 
 def game_loop():
     global pause
-    global score
     topScore = 0
 
     while True:
